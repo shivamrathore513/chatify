@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
-let cors = require('cors')
+// let cors = require('cors')
 
 
 
@@ -11,7 +11,7 @@ const { notFound, errorHandler } = require("./middleware");
 
 const app = express(); // Use express js in our app
 app.use(express.json()); // Accept JSON data.
-app.use(cors())// handling cors
+// app.use(cors())// handling cors
 dotenv.config({ path: path.join(__dirname, "./.env") }); // Specify a custom path if your file containing environment variables is located elsewhere
 connectToMongoDB(); // Connect to Database
 
