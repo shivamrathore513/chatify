@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "author": "shivam rathore",
-  "proxy": "http://localhost:5000",
+  "proxy": "https://chatify24.onrender.com",
   "dependencies": {
     "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.6",
