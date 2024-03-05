@@ -1,29 +1,24 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
-let cors = require('cors')
-
-
+const cors = require('cors');
 
 const { connectToMongoDB } = require("./config");
 const { userRoutes, chatRoutes, messageRoutes } = require("./routes");
 const { notFound, errorHandler } = require("./middleware");
 
-const app = express(); // Use express js in our app
-app.use(express.json()); // Accept JSON data.
-app.use(cors())// handling cors
-dotenv.config({ path: path.join(__dirname, "./.env") }); // Specify a custom path if your file containing environment variables is located elsewhere
-connectToMongoDB(); // Connect to Database
+const app = express();
+app.use(express.json());
+app.use(cors({ origin: "https://chatify2401.netlify.app" })); // Update origin here
+dotenv.config({ path: path.join(__dirname, "./.env") });
+connectToMongoDB();
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 
-// --------------------------DEPLOYMENT------------------------------
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
-
   app.get("*", (req, res) => {
     return res.sendFile(
       path.resolve(__dirname, "client", "build", "index.html")
@@ -35,9 +30,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// --------------------------DEPLOYMENT------------------------------
-
-app.use(notFound); // Handle invalid routes
+app.use(notFound);
 app.use(errorHandler);
 
 const server = app.listen(process.env.PORT, () =>
@@ -46,7 +39,7 @@ const server = app.listen(process.env.PORT, () =>
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://chatify2401.netlify.app/",
+    origin: "https://chatify2401.netlify.app",
   },
   pingTimeout: 60 * 1000,
 });
@@ -69,7 +62,7 @@ io.on("connection", (socket) => {
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
   socket.on("new message", (newMessageRecieved) => {
-    let chat = newMessageRecieved.chat[0]; // Change it to object
+    let chat = newMessageRecieved.chat[0];
 
     if (!chat.users) return console.log("chat.users not defined");
 
